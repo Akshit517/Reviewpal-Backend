@@ -171,36 +171,37 @@ class WorkspaceMemberView(APIView):
         email.attach_alternative(html_content, "text/html")
         email.send()
 
-class AcceptWorkspaceInviteView(APIView):
-    def get(self, request, uidb64, token, workspace_pk, role):
+from django.views import View
+from django.shortcuts import render
+
+class AcceptWorkspaceInviteView(View):
+    template_name = 'workspace/invite_result.html'
+    
+    def get(self, request, workspace_pk, token, uidb64, role):
         try:
-            print("uidb64", uidb64)
             uid = urlsafe_base64_decode(uidb64).decode('utf-8')
             user = get_object_or_404(User, pk=uid)
             
             if not default_token_generator.check_token(user, token):
-                return Response(
-                    {"error": "Invalid or expired token"}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
+                return render(request, self.template_name, {
+                    'error': 'Invalid or expired token'
+                })
+            
             workspace = get_object_or_404(Workspace, pk=workspace_pk)
-
+            
             if WorkspaceRole.objects.filter(user=user, workspace=workspace).exists():
-                return Response(
-                    {"message": "You are already a member of the workspace."}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
+                return render(request, self.template_name, {
+                    'error': 'You are already a member of the workspace.'
+                })
+            
             WorkspaceRole.objects.create(user=user, workspace=workspace, role=role)
-
-            return Response(
-                {"message": "You have successfully joined the workspace!"}, 
-                status=status.HTTP_200_OK
-            )
-        
+            
+            return render(request, self.template_name, {
+                'message': 'You have successfully joined the workspace!',
+                'workspace_name': workspace.name
+            })
+            
         except Exception as e:
-            return Response(
-                {"error": str(e)}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return render(request, self.template_name, {
+                'error': str(e)
+            })
