@@ -6,11 +6,12 @@ from users.views import (
     GoogleLoginApi,
     ChanneliLoginApi,
     LogoutView,
-    WrappedTokenRefreshView
+    WrappedTokenRefreshView,
+    UserView,
+    UploadMediaView,
+    UserProfileView
 )
 from users.views.app_links import asset_links
-from users.views.upload_media import UploadMediaView
-from users.views.users import UserView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),   
@@ -23,4 +24,5 @@ urlpatterns = [
     path('.well-known/assetlinks.json', asset_links),
     path('upload-media/', UploadMediaView.as_view(), name='upload_media'),
     path('users/', UserView.as_view(), name='users'),
+    path('profile/', UserProfileView.as_view(), name='profile'),
 ]

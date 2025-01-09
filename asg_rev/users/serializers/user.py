@@ -17,3 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "password", "email", "profile_pic", "auth_type")
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(read_only = True)
+    auth_type = serializers.CharField(read_only = True)
+    class Meta:
+        model = User
+        fields = ("id", "username", "email", "profile_pic", "auth_type")

@@ -21,6 +21,9 @@ from workspaces.views.submission import (
     SubmissionRevieweeView,
     SubmissionReviewerView,
 )
+from workspaces.views.submission_detail import (
+    SubmissionDetailView
+)
 from workspaces.views.iteration import (
     RevieweeIterationView,
     ReviewerIterationView

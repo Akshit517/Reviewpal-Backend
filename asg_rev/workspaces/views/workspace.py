@@ -196,6 +196,12 @@ class AcceptWorkspaceInviteView(View):
             
             WorkspaceRole.objects.create(user=user, workspace=workspace, role=role)
             
+            # here i am adding user to all categories since categories permission is not implemented
+            # user is being added as a category_member
+            categories = Category.objects.filter(workspace=workspace)
+            for category in categories:
+                CategoryRole.objects.create(user=user, category=category)
+
             return render(request, self.template_name, {
                 'message': 'You have successfully joined the workspace!',
                 'workspace_name': workspace.name
