@@ -92,4 +92,5 @@ urlpatterns = [
     path('api/workspaces/<uuid:workspace_pk>/accept-invite/<str:token>/<str:uidb64>/<str:role>/',
          AcceptWorkspaceInviteView.as_view(),
          name='accept_workspace_invite'),
+    path(f'api/submissions/details/', SubmissionDetailView.as_view(), name='submission-details'),
 ]

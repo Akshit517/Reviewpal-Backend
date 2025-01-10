@@ -24,3 +24,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "email", "profile_pic", "auth_type")
+
+    def validate(self, data):
+        if 'username' not in data and 'profile_pic' not in data:
+            raise serializers.ValidationError("Only username and profile_pic can be updated.")
+        return data
