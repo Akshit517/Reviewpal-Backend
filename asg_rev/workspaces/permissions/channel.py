@@ -57,3 +57,8 @@ class IsChannelMember(RolePermissionMixin, BasePermission):
     def has_permission(self, request, view):
         print("executing is channel member permission",  self.has_role_permission(request, view, 'reviewee'))
         return self.is_channel_member(request, view)
+
+class IsTeamMember(RolePermissionMixin, BasePermission):
+    def has_permission(self, request, view):
+        print("executing is channel member permission",  self.has_role_permission(request, view, 'reviewee'))
+        return self.is_channel_member(request, view)

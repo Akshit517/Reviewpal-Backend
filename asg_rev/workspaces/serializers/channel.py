@@ -13,6 +13,7 @@ from workspaces.models import (
 from workspaces.serializers.assignment import (
     AssignmentSerializer
 )
+from workspaces.serializers.team import TeamSerializer
 
 class ChannelSerializer(serializers.ModelSerializer):
     assignment_data = AssignmentSerializer(write_only=True, required=True)
@@ -72,9 +73,10 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 class ChannelRoleSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    team = TeamSerializer()
     class Meta:
         model = ChannelRole
-        fields = ('id', 'user', 'channel', 'role')
+        fields = ('id', 'user', 'channel', 'role', 'team')
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=ChannelRole.objects.all(),

@@ -4,6 +4,9 @@ from workspaces import utils
 from workspaces.models.assignment.assignment import (
     Assignment,
 )
+from workspaces.models.team import (
+    Team,
+)
 from users.models import (
     User,
 )
@@ -19,6 +22,11 @@ class Submission(models.Model):
         on_delete=models.CASCADE,
         related_name='submissions'
     )
+    sender_team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name='submissions'
+    )
     content = models.TextField(
         blank=True, 
         null=True
@@ -31,25 +39,8 @@ class Submission(models.Model):
     )
     
     def __str__(self):
-        return f"Submission by {self.sender} for {self.assignment}"
+        return f"Submission by {self.sender}[{self.sender_team}] for {self.assignment}"
     
     def clean(self):
         if self.file is None and self.content is None:
             raise ValidationError(_('File or Content should not be null'))
-
-class Team(models.Model):
-    assignment = models.ForeignKey(
-        Assignment,
-        on_delete=models.CASCADE,
-        related_name='teams'
-    )
-    members = models.ManyToManyField(
-        User,
-        related_name='team_members'
-    )
-    team_name = models.CharField(
-        max_length=100
-    )
-
-    def __str__(self):
-        return f"{self.team_name}"

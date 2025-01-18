@@ -12,4 +12,6 @@ from workspaces.permissions.channel import (
     IsReviewee,
     IsChannelMember,
 )
-
+from workspaces.permissions.team import (
+    IsTeamMember
+)

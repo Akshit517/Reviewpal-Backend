@@ -2,26 +2,35 @@ from rest_framework import serializers
 from workspaces.models import (
     Submission,
     Iteration,
-    Team
+    ChannelRole
 )
 from workspaces.serializers.iteration import (
-    IterationRevieweeSerializer,
+    IterationRevieweeSerializer,   
+)
+from workspaces.serializers.team import (
+    TeamSerializer   
 )
 from users.serializers import (
     UserSerializer,
 )
+from workspaces.models.team import Team
 
 class SubmissionRevieweeSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
     class Meta:
         model = Submission
-        fields = ['id','content','file','submitted_at']
+        fields = ['id','content','file','submitted_at', 'sender']
 
     def create(self, validated_data):
-        sender = validated_data.pop('sender')  
+        sender = validated_data.pop('sender') 
         assignment = validated_data.pop('assignment')
-
+        sender_team = ChannelRole.objects.filter(
+            user=sender,
+            channel=assignment.id
+        ).first().team
         submission = Submission.objects.create(
            sender=sender,
+           sender_team=sender_team,
            assignment=assignment,
             **validated_data
         )
@@ -30,25 +39,19 @@ class SubmissionRevieweeSerializer(serializers.ModelSerializer):
 
 class SubmissionReviewerSerializer(serializers.ModelSerializer):
     sender = UserSerializer()
+    sender_team = TeamSerializer()
     iterations = IterationRevieweeSerializer(
         many=True, 
         read_only=True,
         source='iteration_submissions'
     )
-
+    content = serializers.CharField(
+        read_only=True
+    )
+    file = serializers.URLField(
+        read_only=True
+    )
+    
     class Meta:
         model = Submission
-        fields = ['id', 'sender', 'assignment', 'submitted_at', 'iterations']
-
-class TeamSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True)
-    class Meta:
-        model = Team
-        fields = ['id','assignment,''team_name','team_leader','members']
-
-    def validate_assignment(self , value):
-        if not value.for_teams:
-            raise serializers.ValidationError(
-                "This assignment does not allow team submissions"
-            )
-        return value
+        fields ='__all__'

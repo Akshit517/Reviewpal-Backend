@@ -75,9 +75,9 @@ urlpatterns = [
         name='submission-reviewer'
     ),
     path(
-        f'{prefix_url}workspaces/<uuid:workspace_pk>/categories/<int:category_pk>/channels/<uuid:channel_pk>/submissions/<int:user_id>/', 
+        f'{prefix_url}workspaces/<uuid:workspace_pk>/categories/<int:category_pk>/channels/<uuid:channel_pk>/submissions/<uuid:team_id>/', 
         SubmissionReviewerView.as_view(), 
-        name='submission-reviewer-user'
+        name='submission-reviewer-team'
     ),
     path(
         f'{prefix_url}workspaces/<uuid:workspace_pk>/categories/<int:category_pk>/channels/<uuid:channel_pk>/submissions/<int:submission_id>/reviewer-iterations/',
@@ -85,7 +85,7 @@ urlpatterns = [
         name='reviewer-iterations'
     ),
     path(
-        f'{prefix_url}workspaces/<uuid:workspace_pk>/categories/<int:category_pk>/channels/<uuid:channel_pk>/submissions/<int:submission_id>/reviewee-iterations/',
+        f'{prefix_url}workspaces/<uuid:workspace_pk>/categories/<int:category_pk>/channels/<uuid:channel_pk>/submissions/<int:submission_pk>/reviewee-iterations/',
         RevieweeIterationView.as_view(),
         name='reviewee-iterations'
     ),

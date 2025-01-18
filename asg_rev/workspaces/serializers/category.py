@@ -5,10 +5,11 @@ from workspaces.models.category import (
     Category,
     CategoryRole,
 )
-from workspaces.models.channel import (
+from workspaces.models import (
     Channel,
-    ChannelRole,
+    ChannelRole
 )
+
 from workspaces.serializers.channel import (
     ChannelSerializer,
     ChannelRoleSerializer,

@@ -8,7 +8,9 @@ from workspaces.models.category import (
 )
 from workspaces.models.channel import (
     Channel,
-    ChannelRole,
+)
+from workspaces.models.channel_role import (
+    ChannelRole
 )
 from workspaces.models.assignment.assignment import (
     Assignment,
@@ -22,5 +24,7 @@ from workspaces.models.assignment.iteration import (
 )
 from workspaces.models.assignment.submission import (
     Submission,
+)
+from workspaces.models.team import (
     Team,
 )

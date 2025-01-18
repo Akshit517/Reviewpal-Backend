@@ -13,7 +13,8 @@ from workspaces.models import (
 )
 from workspaces.permissions import (
     IsReviewer,
-    IsReviewee
+    IsReviewee,
+    IsTeamMember
 )
 from workspaces.serializers.iteration import (
     IterationReviewerSerializer,
@@ -42,7 +43,6 @@ class ReviewerIterationView(APIView):
         iteration = iteration_serializer.save(
             submission=submission,
             reviewer=request.user,
-            reviewee=submission.sender
         )
 
         status_data = request.data.get('assignment_status')
@@ -51,7 +51,7 @@ class ReviewerIterationView(APIView):
             if status_serializer.is_valid():
                 AssignmentStatus.objects.update_or_create(
                     assignment=submission.assignment,
-                    reviewee=submission.sender,
+                    team=submission.sender_team,
                     defaults=status_serializer.validated_data
                 )
 
@@ -77,13 +77,13 @@ class ReviewerIterationView(APIView):
         return Response(serializer.data)
 
 class RevieweeIterationView(APIView):
-    permission_classes = [IsReviewee | IsReviewer]
+    permission_classes = [( IsReviewee | IsReviewer )& IsTeamMember]
 
-    def get(self, request, workspace_pk, category_pk, channel_pk, submission_id):
+    def get(self, request, workspace_pk, category_pk, channel_pk, submission_pk):
         """Get iterations with remarks and status for reviewee."""
         submission = get_object_or_404(
-            Submission.objects.filter(sender=request.user),
-            id=submission_id
+            Submission,
+            id=submission_pk
         )
 
         iterations = Iteration.objects.filter(
@@ -96,10 +96,9 @@ class RevieweeIterationView(APIView):
 
         serializer = IterationRevieweeSerializer(iterations, many=True)
         
-        # Get latest status
         latest_status = AssignmentStatus.objects.filter(
             assignment=submission.assignment,
-            reviewee=request.user
+            team=submission.sender_team
         ).first()
 
         return Response({

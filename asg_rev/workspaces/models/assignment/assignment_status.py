@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from users.models import User
-from workspaces.models.assignment.submission import Team
+from workspaces.models.team import Team
 from workspaces.models.assignment.assignment import Assignment
 
 
@@ -12,19 +12,20 @@ class AssignmentStatus(models.Model):
         ('ongoing', 'Ongoing'),
         ('incomplete', 'Incomplete'),
     )
-    reviewee = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        null=True,
-        related_name='assignment_status_as_reviewee' 
-    )
-    reviewee_team = models.ForeignKey(
+    # reviewee = models.ForeignKey(
+    #     User,
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    #     related_name='assignment_status_as_reviewee' 
+    # )
+    team = models.ForeignKey(
         Team, 
-        null=True, 
-        blank=True, 
+        #null=True, 
+        #blank=True, 
         on_delete=models.CASCADE, 
         related_name='assignment_statuses'
     )
+    #--------------
     assignment = models.ForeignKey(
         Assignment, 
         on_delete=models.CASCADE, 

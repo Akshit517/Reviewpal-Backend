@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from workspaces.models import (
     Channel,
     ChannelRole,
+    Team
 )
 from workspaces import utils 
 
@@ -11,4 +12,9 @@ from workspaces import utils
 def create_rolechannel(sender, instance, created, **kwargs):
     if created:      
         user = utils.get_current_user_or_none() 
-        ChannelRole.objects.create(user=user, channel=instance, role='reviewer')
+        ChannelRole.objects.create(
+            user=user, 
+            channel=instance, 
+            role='reviewer', 
+            team=Team.objects.create(team_name='Reviewers',channel=instance)
+        )
