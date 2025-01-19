@@ -28,7 +28,7 @@ class GroupChatConsumer(AsyncJsonWebsocketConsumer):
             if not self.room_name:
                 raise DenyConnection("Room name is required")
 
-            workspace_id, category_id, channel_id = self.room_name.split("_")
+            workspace_id, category_id, channel_id = self.room_name.split("::")
             self.room_group_name = f"group_chat_{self.room_name}"
 
             user = self.scope["user"]
@@ -40,7 +40,6 @@ class GroupChatConsumer(AsyncJsonWebsocketConsumer):
             channel_role_exists = await sync_to_async(ChannelRole.objects.filter(channel=self.channel, user=user).exists)()
             if not channel_role_exists:
                 raise DenyConnection("User is not a member of this channel")
-
             await self.channel_layer.group_add(self.room_group_name, self.channel_name)
             await self.accept()
 
