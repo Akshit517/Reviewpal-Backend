@@ -7,7 +7,7 @@ from workspaces.models.channel import Channel
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    text_content = models.TextField()
+    content = models.TextField()
     file = models.FileField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
